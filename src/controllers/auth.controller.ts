@@ -8,13 +8,9 @@ function signToken(userId: string, role: string): string {
   return jwt.sign({ userId, role }, env.JWT_SECRET, { expiresIn: "7d" });
 }
 
-/**
- * POST /api/auth/register
- */
 export async function register(req: AuthRequest, res: Response): Promise<void> {
   const { name, email, password, role } = req.body;
 
-  // Check if email already exists
   const existingUser = await User.findOne({ email });
   if (existingUser) {
     res.status(409).json({ error: "Email already registered." });
@@ -35,13 +31,9 @@ export async function register(req: AuthRequest, res: Response): Promise<void> {
   });
 }
 
-/**
- * POST /api/auth/login
- */
 export async function login(req: AuthRequest, res: Response): Promise<void> {
   const { email, password } = req.body;
 
-  // Find user and explicitly select password field
   const user = await User.findOne({ email }).select("+password");
   if (!user) {
     res.status(401).json({ error: "Invalid email or password." });
@@ -67,9 +59,6 @@ export async function login(req: AuthRequest, res: Response): Promise<void> {
   });
 }
 
-/**
- * GET /api/auth/me
- */
 export async function getMe(req: AuthRequest, res: Response): Promise<void> {
   const user = await User.findById(req.user!.userId);
   if (!user) {

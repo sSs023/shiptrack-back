@@ -1,9 +1,5 @@
 import { Request, Response, NextFunction } from "express";
 
-/**
- * Global error handler middleware.
- * Catches unhandled errors and returns a consistent JSON response.
- */
 export function errorHandler(
   err: Error & { statusCode?: number; code?: number | string },
   _req: Request,
@@ -12,13 +8,11 @@ export function errorHandler(
 ): void {
   console.error("Unhandled error:", err);
 
-  // Mongoose validation error
   if (err.name === "ValidationError") {
     res.status(400).json({ error: err.message });
     return;
   }
 
-  // Mongoose duplicate key error
   if (err.code === 11000) {
     res
       .status(409)
@@ -26,7 +20,6 @@ export function errorHandler(
     return;
   }
 
-  // Mongoose cast error (invalid ObjectId, etc.)
   if (err.name === "CastError") {
     res.status(400).json({ error: "Invalid resource ID format." });
     return;

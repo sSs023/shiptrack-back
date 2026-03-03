@@ -3,11 +3,6 @@ import jwt from "jsonwebtoken";
 import { env } from "../config/env.js";
 import type { AuthRequest, JwtPayload } from "../types/index.js";
 
-/**
- * JWT authentication middleware.
- * Reads the Authorization: Bearer <token> header, verifies the JWT,
- * and attaches the decoded payload to req.user.
- */
 export function authenticate(
   req: AuthRequest,
   res: Response,

@@ -2,7 +2,6 @@ import { body, query } from "express-validator";
 import { SHIPMENT_STATUSES, DELIVERY_OPTIONS } from "../types/index.js";
 
 export const createShipmentValidator = [
-  // Sender
   body("sender.name").trim().notEmpty().withMessage("Sender name is required."),
   body("sender.address")
     .trim()
@@ -13,7 +12,6 @@ export const createShipmentValidator = [
     .notEmpty()
     .withMessage("Sender phone is required."),
 
-  // Recipient
   body("recipient.name")
     .trim()
     .notEmpty()
@@ -27,7 +25,6 @@ export const createShipmentValidator = [
     .notEmpty()
     .withMessage("Recipient phone is required."),
 
-  // Cargo
   body("cargo.description")
     .trim()
     .notEmpty()
@@ -40,7 +37,6 @@ export const createShipmentValidator = [
     .notEmpty()
     .withMessage("Cargo dimensions are required."),
 
-  // Delivery option
   body("deliveryOption")
     .isIn(DELIVERY_OPTIONS)
     .withMessage(

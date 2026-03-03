@@ -1,10 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { validationResult } from "express-validator";
 
-/**
- * Middleware that checks express-validator results
- * and returns 400 with validation errors if any exist.
- */
 export function validate(
   req: Request,
   res: Response,

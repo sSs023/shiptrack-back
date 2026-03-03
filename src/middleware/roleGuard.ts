@@ -1,11 +1,6 @@
 import { Response, NextFunction } from "express";
 import type { AuthRequest, UserRole } from "../types/index.js";
 
-/**
- * Role guard middleware factory.
- * Returns middleware that checks if the authenticated user has the required role.
- * Must be used after the authenticate middleware.
- */
 export function requireRole(...roles: UserRole[]) {
   return (req: AuthRequest, res: Response, next: NextFunction): void => {
     if (!req.user) {

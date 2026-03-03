@@ -8,10 +8,6 @@ import {
 
 const PAGE_SIZE = 20;
 
-/**
- * POST /api/shipments
- * Customer only — create a new shipment.
- */
 export async function createShipment(
   req: AuthRequest,
   res: Response,
@@ -42,10 +38,6 @@ export async function createShipment(
   res.status(201).json(shipment);
 }
 
-/**
- * GET /api/shipments
- * Protected, role-aware — list shipments with search, filter, and pagination.
- */
 export async function listShipments(
   req: AuthRequest,
   res: Response,
@@ -53,20 +45,16 @@ export async function listShipments(
   const { search, status, page } = req.query;
   const currentPage = Math.max(1, parseInt(page as string, 10) || 1);
 
-  // Build query filter
   const filter: Record<string, unknown> = {};
 
-  // Customers only see their own shipments
   if (req.user!.role === "customer") {
     filter.customerId = req.user!.userId;
   }
 
-  // Status filter
   if (status && typeof status === "string") {
     filter.status = status;
   }
 
-  // Search filter: matches trackingNumber or recipient.name
   if (search && typeof search === "string") {
     const regex = { $regex: search, $options: "i" };
     filter.$or = [{ trackingNumber: regex }, { "recipient.name": regex }];
@@ -89,10 +77,6 @@ export async function listShipments(
   });
 }
 
-/**
- * GET /api/shipments/:id
- * Protected — get shipment detail. Customers can only access their own.
- */
 export async function getShipment(
   req: AuthRequest,
   res: Response,
@@ -107,7 +91,6 @@ export async function getShipment(
     return;
   }
 
-  // Customers can only see their own shipments
   if (
     req.user!.role === "customer" &&
     shipment.customerId._id.toString() !== req.user!.userId
@@ -119,10 +102,6 @@ export async function getShipment(
   res.json(shipment);
 }
 
-/**
- * GET /api/shipments/track/:trackingNumber
- * Public — track a shipment by tracking number.
- */
 export async function trackShipment(
   req: AuthRequest,
   res: Response,
@@ -145,10 +124,6 @@ export async function trackShipment(
   res.json(shipment);
 }
 
-/**
- * PATCH /api/shipments/:id/status
- * Operator only — update shipment status.
- */
 export async function updateShipmentStatus(
   req: AuthRequest,
   res: Response,
@@ -161,7 +136,6 @@ export async function updateShipmentStatus(
     return;
   }
 
-  // Push new tracking entry
   shipment.trackingHistory.push({
     status: status as ShipmentStatus,
     note,

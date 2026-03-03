@@ -1,15 +1,10 @@
 import Shipment from "../models/Shipment.js";
 import type { DeliveryOption } from "../types/index.js";
 
-/**
- * Generates the next tracking number in sequence.
- * Format: SHT-YYYYNNNN (e.g. SHT-20260001)
- */
 export async function generateTrackingNumber(): Promise<string> {
   const year = new Date().getFullYear();
   const prefix = `SHT-${year}`;
 
-  // Find the latest shipment with a tracking number for this year
   const latest = await Shipment.findOne({
     trackingNumber: { $regex: `^${prefix}` },
   })
@@ -26,9 +21,6 @@ export async function generateTrackingNumber(): Promise<string> {
   return `${prefix}${nextNum.toString().padStart(4, "0")}`;
 }
 
-/**
- * Computes estimated delivery date based on delivery option.
- */
 export function computeEstimatedDelivery(option: DeliveryOption): Date {
   const now = new Date();
   const daysMap: Record<DeliveryOption, number> = {

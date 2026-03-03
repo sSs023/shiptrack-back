@@ -32,7 +32,7 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: [true, "Password is required"],
       minlength: [6, "Password must be at least 6 characters"],
-      select: false, // Never return password by default
+      select: false,
     },
     role: {
       type: String,
@@ -45,7 +45,6 @@ const userSchema = new Schema<IUser>(
   },
 );
 
-// Hash password before saving
 userSchema.pre("save", async function () {
   if (!this.isModified("password")) return;
 
@@ -53,14 +52,12 @@ userSchema.pre("save", async function () {
   this.password = await bcryptjs.hash(this.password, salt);
 });
 
-// Instance method to compare passwords
 userSchema.methods.comparePassword = async function (
   candidatePassword: string,
 ): Promise<boolean> {
   return bcryptjs.compare(candidatePassword, this.password);
 };
 
-// Remove password from JSON output
 userSchema.set("toJSON", {
   transform(_doc, ret) {
     delete ret.password;
