@@ -8,6 +8,9 @@ import { errorHandler } from "./middleware/errorHandler.js";
 
 const app = express();
 
+// ---------------- Express settings ---------------
+app.set("trust proxy", 1);
+
 // --------------- Security middleware ---------------
 app.use(helmet());
 app.use(
