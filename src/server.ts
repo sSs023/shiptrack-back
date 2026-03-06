@@ -52,7 +52,7 @@ app.use(
   "/api/docs",
   express.static(__swaggerDistPath, { index: false }),
   swaggerUi.serve,
-  swaggerUi.setup(swaggerJSDoc(swaggerSpec)),
+  swaggerUi.setup(swaggerSpec),
 );
 
 app.get("/api/docs.json", (_req, res) => {
