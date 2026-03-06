@@ -51,10 +51,7 @@ app.use(
   "/api/docs",
   express.static(__swaggerDistPath, { index: false }),
   swaggerUi.serve,
-  swaggerUi.setup(swaggerSpec, {
-    customCss:
-      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css",
-  }),
+  swaggerUi.setup(swaggerSpec),
 );
 
 app.get("/api/docs.json", (_req, res) => {
