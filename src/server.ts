@@ -9,7 +9,6 @@ import shipmentRoutes from "./routes/shipment.routes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { fileURLToPath } from "url";
 import path from "path";
-import swaggerJSDoc from "swagger-jsdoc";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -52,7 +51,10 @@ app.use(
   "/api/docs",
   express.static(__swaggerDistPath, { index: false }),
   swaggerUi.serve,
-  swaggerUi.setup(swaggerSpec),
+  swaggerUi.setup(swaggerSpec, {
+    customCss:
+      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css",
+  }),
 );
 
 app.get("/api/docs.json", (_req, res) => {
