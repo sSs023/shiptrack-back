@@ -12,6 +12,21 @@ const app = express();
 
 app.set("trust proxy", 1);
 
+app.use(
+  "/api/docs",
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerSpec, {
+    customSiteTitle: "ShipTrack API Docs",
+    customCss: ".swagger-ui .topbar { display: none }",
+    customCssUrl:
+      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.17.14/swagger-ui.min.css",
+    customJs: [
+      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.17.14/swagger-ui-bundle.min.js",
+      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/5.17.14/swagger-ui-standalone-preset.min.js",
+    ],
+  }),
+);
+
 app.use(helmet());
 app.use(
   cors({
@@ -37,14 +52,6 @@ app.get("/", (_req, res) => {
   res.json({ status: "ok", service: "ShipTrack API" });
 });
 
-app.use(
-  "/api/docs",
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerSpec, {
-    customSiteTitle: "ShipTrack API Docs",
-    customCss: ".swagger-ui .topbar { display: none }",
-  }),
-);
 app.get("/api/docs.json", (_req, res) => {
   res.setHeader("Content-Type", "application/json");
   res.send(swaggerSpec);
