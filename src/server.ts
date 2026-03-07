@@ -58,7 +58,6 @@ app.use(
   swaggerUi.serve,
   swaggerUi.setup(swaggerSpec, {
     customCssUrl: CUSTOM_CSS,
-    customJs: ["https://cloudflare.com", "https://cloudflare.com"],
   }),
 );
 
