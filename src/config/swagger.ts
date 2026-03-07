@@ -1,4 +1,9 @@
 import swaggerJsdoc from "swagger-jsdoc";
+import { fileURLToPath } from "url";
+import path from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const options: swaggerJsdoc.Options = {
   definition: {
@@ -24,7 +29,8 @@ const options: swaggerJsdoc.Options = {
           type: "http",
           scheme: "bearer",
           bearerFormat: "JWT",
-          description: "Enter your JWT token obtained from /auth/login or /auth/register",
+          description:
+            "Enter your JWT token obtained from /auth/login or /auth/register",
         },
       },
       schemas: {
@@ -269,7 +275,10 @@ const options: swaggerJsdoc.Options = {
                 type: "object",
                 properties: {
                   field: { type: "string", example: "email" },
-                  message: { type: "string", example: "Please provide a valid email." },
+                  message: {
+                    type: "string",
+                    example: "Please provide a valid email.",
+                  },
                 },
               },
             },
@@ -278,7 +287,7 @@ const options: swaggerJsdoc.Options = {
       },
     },
   },
-  apis: ["./src/routes/*.ts"],
+  apis: [path.join(__dirname, "..", "routes", "*.{ts,js}")],
 };
 
 export const swaggerSpec = swaggerJsdoc(options);

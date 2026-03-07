@@ -7,17 +7,6 @@ import { swaggerSpec } from "./config/swagger.js";
 import authRoutes from "./routes/auth.routes.js";
 import shipmentRoutes from "./routes/shipment.routes.js";
 import { errorHandler } from "./middleware/errorHandler.js";
-import { fileURLToPath } from "url";
-import path from "path";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-export const __swaggerDistPath = path.join(
-  __dirname,
-  "node_modules",
-  "swagger-ui-dist",
-);
-
 const app = express();
 
 app.set("trust proxy", 1);
@@ -47,12 +36,7 @@ app.get("/", (_req, res) => {
   res.json({ status: "ok", service: "ShipTrack API" });
 });
 
-app.use(
-  "/api/docs",
-  express.static(__swaggerDistPath, { index: false }),
-  swaggerUi.serve,
-  swaggerUi.setup(swaggerSpec),
-);
+app.use("/api/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.get("/api/docs.json", (_req, res) => {
   res.setHeader("Content-Type", "application/json");
