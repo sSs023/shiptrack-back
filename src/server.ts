@@ -57,7 +57,11 @@ app.use(
   express.static(__swaggerDistPath, { index: false }),
   swaggerUi.serve,
   swaggerUi.setup(swaggerSpec, {
-    customCssUrl: CUSTOM_CSS,
+    customCssUrl: "/api/docs/static/swagger-ui.css",
+    customJs: [
+      "/api/docs/static/swagger-ui-bundle.js",
+      "/api/docs/static/swagger-ui-standalone-preset.js",
+    ],
   }),
 );
 
