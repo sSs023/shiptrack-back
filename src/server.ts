@@ -1,26 +1,13 @@
-import express from "express";
 import cors from "cors";
-import helmet from "helmet";
+import express from "express";
 import rateLimit from "express-rate-limit";
+import helmet from "helmet";
+import morgan from "morgan";
 import swaggerUi from "swagger-ui-express";
 import { swaggerSpec } from "./config/swagger.js";
+import { errorHandler } from "./middleware/errorHandler.js";
 import authRoutes from "./routes/auth.routes.js";
 import shipmentRoutes from "./routes/shipment.routes.js";
-import { errorHandler } from "./middleware/errorHandler.js";
-import morgan from "morgan";
-import { fileURLToPath } from "url";
-import path from "path";
-
-const CUSTOM_CSS =
-  "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css";
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-export const __swaggerDistPath = path.join(
-  __dirname,
-  "node_modules",
-  "swagger-ui-dist",
-);
 
 const app = express();
 app.use(morgan("dev"));
@@ -54,13 +41,13 @@ app.get("/", (_req, res) => {
 
 app.use(
   "/api/docs",
-  express.static(__swaggerDistPath, { index: false }),
   swaggerUi.serve,
   swaggerUi.setup(swaggerSpec, {
-    customCssUrl: "/api/docs/static/swagger-ui.css",
+    customCssUrl:
+      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css",
     customJs: [
-      "/api/docs/static/swagger-ui-bundle.js",
-      "/api/docs/static/swagger-ui-standalone-preset.js",
+      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui-bundle.min.js",
+      "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui-standalone-preset.min.js",
     ],
   }),
 );
