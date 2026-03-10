@@ -1,16 +1,32 @@
 import mongoose from "mongoose";
-import { env } from "./env.js";
 
-export async function connectDB(): Promise<void> {
-  try {
-    await mongoose.connect(env.MONGO_URI);
-    console.log(`MongoDB connected: ${mongoose.connection.host}`);
-  } catch (error) {
-    console.error("MongoDB connection error:", error);
-    process.exit(1);
+let cached = (global as any).mongoose;
+
+if (!cached) {
+  cached = (global as any).mongoose = { conn: null, promise: null };
+}
+
+const connectDB = async () => {
+  if (cached.conn) {
+    return cached.conn;
   }
-}
 
-export async function disconnectDB(): Promise<void> {
-  await mongoose.disconnect();
-}
+  if (!cached.promise) {
+    console.log("Connecting to MongoDB...");
+    cached.promise = mongoose.connect(process.env.MONGO_URI!, {
+      bufferCommands: false,
+    });
+  }
+
+  try {
+    cached.conn = await cached.promise;
+  } catch (error) {
+    cached.promise = null;
+    console.error("MongoDB connection error:", error);
+    throw error;
+  }
+
+  return cached.conn;
+};
+
+export default connectDB;
