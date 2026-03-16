@@ -10,6 +10,11 @@ import authRoutes from "./routes/auth.routes.js";
 import shipmentRoutes from "./routes/shipment.routes.js";
 import connectDB from "./config/db.js";
 
+connectDB().catch((err) => {
+  console.error("Failed to connect to MongoDB on startup: ", err);
+  process.exit(1);
+});
+
 const app = express();
 app.use(morgan("dev"));
 
@@ -22,15 +27,6 @@ app.use(
     credentials: true,
   }),
 );
-
-app.use(async (_req, _res, next) => {
-  try {
-    await connectDB();
-    next();
-  } catch (error) {
-    next(error);
-  }
-});
 
 app.use(
   rateLimit({
