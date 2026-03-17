@@ -28,6 +28,15 @@ app.use(
   }),
 );
 
+app.use(async (_req, _res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
+
 app.use(
   rateLimit({
     windowMs: 15 * 60 * 1000,

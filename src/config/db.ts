@@ -1,42 +1,32 @@
 import mongoose from "mongoose";
 
-const MONGO_URI = process.env.MONGO_URI!;
+let cached = (global as any).mongoose;
 
-// Module-level cache (persists across requests in the same instance)
-let isConnected = false;
+if (!cached) {
+  cached = (global as any).mongoose = { conn: null, promise: null };
+}
 
-const connectDB = async (): Promise<void> => {
-  // Already connected in this instance
-  if (isConnected && mongoose.connection.readyState === 1) {
-    return;
+const connectDB = async () => {
+  if (cached.conn) {
+    return cached.conn;
   }
 
-  // Connection exists but not yet open (connecting state)
-  if (mongoose.connection.readyState === 2) {
-    await new Promise<void>((resolve, reject) => {
-      mongoose.connection.once("connected", resolve);
-      mongoose.connection.once("error", reject);
+  if (!cached.promise) {
+    console.log("Connecting to MongoDB...");
+    cached.promise = mongoose.connect(process.env.MONGODB_URI!, {
+      bufferCommands: false,
     });
-    isConnected = true;
-    return;
   }
 
   try {
-    console.log("Connecting to MongoDB...");
-    await mongoose.connect(MONGO_URI, {
-      bufferCommands: false,
-      maxPoolSize: 10, // Reuse connections within the pool
-      serverSelectionTimeoutMS: 5000,
-      socketTimeoutMS: 45000,
-    });
-
-    isConnected = true;
-    console.log("MongoDB connected");
+    cached.conn = await cached.promise;
   } catch (error) {
-    isConnected = false;
+    cached.promise = null;
     console.error("MongoDB connection error:", error);
     throw error;
   }
+
+  return cached.conn;
 };
 
 export default connectDB;
