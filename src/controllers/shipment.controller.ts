@@ -6,7 +6,7 @@ import {
   computeEstimatedDelivery,
 } from "../utils/trackingNumber.js";
 
-const PAGE_SIZE = 20;
+const PAGE_SIZE = 10;
 
 export async function createShipment(
   req: AuthRequest,
